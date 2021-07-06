@@ -2,7 +2,7 @@
 
 This repository is the implementation of Scaled Dot  Product Attention (SDPA) Transformer model within a wrapper code suite for training and evaluation. The details of the transformer model can be found in [Transformer model for language understanding](https://www.tensorflow.org/text/tutorials/transformer)
 
-This training and evaluation suite was used to evaluate a SDPA transformer model for Turkish-English and Portuguese-English translation tasks in the research article: [Power Law Graph Transformer for Machine Translation and Representation Learning](https://github.com/burcgokden/Power-Law-Graph-Transformer/blob/main/plgt_paper.pdf)
+This training and evaluation suite was used to train and evaluate a SDPA transformer model for Turkish-English and Portuguese-English translation tasks in the research article: [Power Law Graph Transformer for Machine Translation and Representation Learning](https://arxiv.org/abs/2107.02039)
 
 #### Key Features
 
@@ -15,7 +15,7 @@ This training and evaluation suite was used to evaluate a SDPA transformer model
 
 #### Sample Run:
 
-Sample run trains and evaluates a 4-layer 8-head SDPA Transformer model using a PT-EN translation task from tensorflow dataset found at: [ted_hrlr_translate/pt_to_en](https://www.tensorflow.org/datasets/catalog/ted_hrlr_translate#ted_hrlr_translatept_to_en)
+Sample run trains and evaluates a 4-layer 8-head SDPA Transformer model for PT-EN translation task from tensorflow dataset found at: [ted_hrlr_translate/pt_to_en](https://www.tensorflow.org/datasets/catalog/ted_hrlr_translate#ted_hrlr_translatept_to_en)
 
 The tokenizer model is built using BERT Subword Tokenizer for Machine Translation implemented at [BERT Subword Tokenizer for Machine Translation](https://github.com/burcgokden/BERT-Subword-Tokenizer-Wrapper)
 
