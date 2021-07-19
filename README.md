@@ -12,6 +12,7 @@ This training and evaluation suite was used to train and evaluate a SDPA transfo
 - Simple interface for evaluating trained model using BLEU score with greedy search and beam search.
 - Data preparation framework for Neural Machine Translation for tensorflow datasets with capability to use a percentage of the train dataset or filter dataset based on a token  number in a sentence. 
 - Capability to reverse source and target languages for input dataset.
+- Keeps track of train and validation loss/accuracy for each epoch.
 
 #### Sample Run:
 
@@ -127,7 +128,85 @@ sebg.beam_evaluate_bleu(
                 )
 
 ```
-                              
-                           
 
+#### Loss and Accuracy Curves:
 
+Train and validation loss/accuracy values for each epoch are saved as pickle file and can be found in the train folder under save_model_path name:
+
+```python
+import common as cm
+
+train_loss=cm.pklload("./model_saves/train/my_sdpa_transformer/train_loss.pkl")
+val_loss=cm.pklload("./model_saves/train/my_sdpa_transformer/val_loss.pkl")
+train_acc=cm.pklload("./model_saves/train/my_sdpa_transformer/train_accuracies.pkl")
+val_acc=cm.pklload("./model_saves/train/my_sdpa_transformer/val_accuracies.pkl")
+```
+
+#### Single Instance Evaluation:
+
+A sentence can be translated and compared to ground truth using greedy search only or beam search methods for single instance evaluation:
+
+```python
+e2e_model=sdpa_run.sdpa_transformer_e2e(
+                                      tokenizer_obj_src = inp_obj.tokenizers_src,
+                                      tokenizer_obj_tgt = inp_obj.tokenizers_tgt,
+                                      checkpoint_path = './model_saves/',
+                                      hpdict=hpdict_sdpa_transformer ,
+                                      load_ckpt='train' # 'val' | 'valacc' | custom checkpoint path
+                                     )
+
+#greedy search only
+translated_text, translated_tokens, _, eval_length = e2e_model.evaluate(sentence, max_length=50)
+e2e_model.print_translation(sentence, translated_text, ground_truth, eval_length)
+
+#beam search
+translated_text_list, translated_tokens_list, tranlated_tokenid_list, eval_length = e2e_model.beam_evaluate(sentence, beam_size=4, max_length=50)
+e2e_model.print_translation(sentence, translated_text_list[0], ground_truth, eval_length)
+```
+
+- Below sentences from test dataset are evaluated with beam length=4 by a model trained with same hyperparameters for a SDPA transformer detailed in the research article. Evaluation output may vary with each newly trained model.
+
+> **Translating from:** perdemos o medo de criar uma coisa nova .  
+> **Best probable translation:** we lost fear to create something new .  
+> **Ground Truth:** we lost the fear of creating something new .  
+>
+> **Translating from:** vou mostrar aqui alguns exemplos , e vamos examinar alguns deles .  
+> **Best probable translation:** let me show you here some examples , and let ' s examine some of them .  
+> **Ground Truth:** i 'm going to show you some examples here , and we will run through some of them .  
+>
+> **Translating from:** ok , hoje quero falar sobre a forma como falamos do amor .  
+> **Best probable translation:** okay , today i want to talk about how we talk about love .  
+> **Ground Truth:** ok , so today i want to talk about how we talk about love .  
+>
+> **Translating from:** mas há uma grande diferença , isso só acontece dentro da colónia .  
+> **Best probable translation:** but there ' s a big difference , it just happens inside the colony .  
+> **Ground Truth:** but there 's a big difference , which is that it only happens within the colony .  
+>
+> **Translating from:** mas muito bons a absorver informação de muitas fontes diversas ao mesmo tempo .  
+> **Best probable translation:** but very good at absorbing data from a lot of different sources at the same time .  
+> **Ground Truth:** but they 're very good at taking in lots of information from lots of different sources at once .  
+>
+> **Translating from:** não podia construir isto com um anel de aço , da forma que sabia .  
+> **Best probable translation:** i could n ' t build this up with a steel ring in the way i knew .  
+> **Ground Truth:** i could n't build this with a steel ring , the way i knew .  
+>
+> **Translating from:** e gostaria de continuar a construir monumentos , que são amados por pessoas .  
+> **Best probable translation:** and i ' d like to continue building monuments , which are loved by people .  
+> **Ground Truth:** and i 'd like to keep building monuments that are beloved by people .  
+>
+> **Translating from:** a questão é que temos que ter um contexto , um limite para as nossas ações em tudo isto .  
+> **Best probable translation:** the key thing is that we have to have a context , a range for our actions in all of this .  
+> **Ground Truth:** the point is that we have to have a context , a gauge for our actions in all this .  
+>
+> **Translating from:** somos mais inteligentes , mais flexivéis , capazes de aprender mais , sobrevivemos em diferentes ambientes , emigrámos para povoar o mundo e viajámos até ao espaço .  
+> **Best probable translation:** we ' re more intelligent , more flexible , we can learn more , we ' ve lived in different environments , we ' ve got into the world , and we push to space .  
+> **Ground Truth:** we 're smarter , we 're more flexible , we can learn more , we survive in more different environments , we migrated to cover the world and even go to outer space .  
+>
+> **Translating from:** olhando para trás para os destroços e desespero daqueles anos , parece-me agora como se alguém tivesse morrido naquele lugar , e , no entanto , uma outra pessoa foi salva .  
+> **Best probable translation:** looking behind the rubble and desperation of those years , it seems to me now as if someone died in that place , and yet another person was saved .  
+> **Ground Truth:** now looking back on the wreckage and despair of those years , it seems to me now as if someone died in that place , and yet , someone else was saved .  
+>
+> **Translating from:** o cérebro pega em informação sem sentido e faz sentido a partir disso , o que significa que nunca vemos o que lá está , nunca vemos informação , só vemos o que nos foi útil ver no passado .  
+> **Best probable translation:** so the brain takes information without it , and it makes sense out of it , which means that we never see what is there , we never see information , we only see what was useful for us to see in the past .  
+> **Ground Truth:** right ? the brain takes meaningless information and makes meaning out of it , which means we never see what 's there , we never see information , we only ever see what was useful to see in the past .  
+>
